@@ -14,7 +14,7 @@ def auroc(y_true, y_pred):
 
 
 datagen = ImageDataGenerator(
-            rescale= 1. / 255.)
+            rescale=1. / 255.)
 
 test_generator = datagen.flow_from_directory('/Users/Oliver/Desktop/datasets/cancer_data', target_size=(96, 96),
                                         class_mode=None, shuffle=False, classes=['test'],
