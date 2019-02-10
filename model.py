@@ -14,9 +14,10 @@ def auroc(y_true, y_pred):
 
 def CNN(input_shape=(96, 96, 3)):
 
-    first_filters = 16
-    second_filters = 32
-    third_filters = 32
+    first_filters = 64
+    second_filters = 128
+    third_filters = 256
+    fourth_filters = 256
     kernel_size = (3, 3)
     pool_size = (2, 2)
 
@@ -26,39 +27,139 @@ def CNN(input_shape=(96, 96, 3)):
     model.add(BatchNormalization())
     model.add(Conv2D(first_filters, kernel_size, activation='relu'))
     model.add(BatchNormalization())
-    model.add(Conv2D(first_filters, kernel_size, activation='relu'))
+    model.add(MaxPooling2D(pool_size))
+    # model.add(Dropout(0.2))
+
+    model.add(Conv2D(second_filters, kernel_size, activation='relu'))
+    model.add(BatchNormalization())
+    model.add(Conv2D(second_filters, kernel_size, activation='relu'))
     model.add(BatchNormalization())
     model.add(MaxPooling2D(pool_size))
-    model.add(Dropout(0.2))
+    # model.add(Dropout(0.2))
 
-    model.add(Conv2D(first_filters, kernel_size, activation='relu', input_shape=input_shape))
+    model.add(Conv2D(third_filters, kernel_size, activation='relu'))
     model.add(BatchNormalization())
-    model.add(Conv2D(first_filters, kernel_size, activation='relu'))
+    model.add(Conv2D(third_filters, kernel_size, activation='relu'))
     model.add(BatchNormalization())
-    model.add(Conv2D(first_filters, kernel_size, activation='relu'))
+    model.add(Conv2D(third_filters, kernel_size, activation='relu'))
+    model.add(BatchNormalization())
+    model.add(Conv2D(third_filters, kernel_size, activation='relu'))
     model.add(BatchNormalization())
     model.add(MaxPooling2D(pool_size))
-    model.add(Dropout(0.2))
+    # model.add(Dropout(0.2))
 
-    model.add(Conv2D(first_filters, kernel_size, activation='relu', input_shape=input_shape))
-    model.add(BatchNormalization())
-    model.add(Conv2D(first_filters, kernel_size, activation='relu'))
-    model.add(BatchNormalization())
-    model.add(Conv2D(first_filters, kernel_size, activation='relu'))
-    model.add(BatchNormalization())
-    model.add(MaxPooling2D(pool_size))
-    model.add(Dropout(0.2))
+    # model.add(Conv2D(fourth_filters, kernel_size, activation='relu'))
+    # model.add(BatchNormalization())
+    # model.add(Conv2D(fourth_filters, kernel_size, activation='relu'))
+    # model.add(BatchNormalization())
+    # model.add(Conv2D(fourth_filters, kernel_size, activation='relu'))
+    # model.add(BatchNormalization())
+    # model.add(Conv2D(fourth_filters, kernel_size, activation='relu'))
+    # model.add(BatchNormalization())
+    # model.add(MaxPooling2D(pool_size))
 
-
+    # model.add(Conv2D(fourth_filters, kernel_size, activation='relu'))
+    # model.add(BatchNormalization())
+    # model.add(Conv2D(fourth_filters, kernel_size, activation='relu'))
+    # model.add(BatchNormalization())
+    # model.add(Conv2D(fourth_filters, kernel_size, activation='relu'))
+    # model.add(BatchNormalization())
+    # model.add(Conv2D(fourth_filters, kernel_size, activation='relu'))
+    # model.add(BatchNormalization())
+    # # model.add(MaxPooling2D(pool_size))
 
     model.add(Flatten())
-    model.add(Dense(256, activation = 'relu'))
+    model.add(Dense(4096, activation='relu'))
+    model.add(Dropout(0.4))
+    model.add(BatchNormalization())
+
+    model.add(Dense(4096, activation='relu'))
+    model.add(Dropout(0.4))
+    model.add(BatchNormalization())
+
+    model.add(Dense(1000, activation = 'relu'))
     model.add(Dropout(0.4))
     model.add(BatchNormalization())
 
     model.add(Dense(1, activation='sigmoid'))
 
-    model.compile(loss='binary_crossentropy', optimizer = keras.optimizers.Adam(lr=3e-4),
+    model.compile(loss='binary_crossentropy', optimizer=keras.optimizers.Adam(lr=3e-4),
                     metrics=['accuracy'])
+
+    return model
+
+
+def CNN_experiment(value, input_shape=(96, 96, 3)):
+    first_filters = 32
+    second_filters = 64
+    third_filters = 128
+    fourth_filters = 256
+    kernel_size = (3, 3)
+    pool_size = (2, 2)
+
+    model = Sequential()
+
+    model.add(Conv2D(first_filters, kernel_size, activation='relu', input_shape=input_shape))
+    model.add(BatchNormalization())
+    model.add(Conv2D(first_filters, kernel_size, activation='relu'))
+    model.add(BatchNormalization())
+    model.add(MaxPooling2D(pool_size))
+    model.add(Dropout(0.2))
+
+    model.add(Conv2D(second_filters, kernel_size, activation='relu'))
+    model.add(BatchNormalization())
+    model.add(Conv2D(second_filters, kernel_size, activation='relu'))
+    model.add(BatchNormalization())
+    model.add(MaxPooling2D(pool_size))
+    model.add(Dropout(0.2))
+
+    model.add(Conv2D(third_filters, kernel_size, activation='relu'))
+    model.add(BatchNormalization())
+    model.add(Conv2D(third_filters, kernel_size, activation='relu'))
+    model.add(BatchNormalization())
+    model.add(Conv2D(third_filters, kernel_size, activation='relu'))
+    model.add(BatchNormalization())
+    model.add(Conv2D(third_filters, kernel_size, activation='relu'))
+    model.add(BatchNormalization())
+    model.add(MaxPooling2D(pool_size))
+    model.add(Dropout(0.2))
+
+    # model.add(Conv2D(fourth_filters, kernel_size, activation='relu'))
+    # model.add(BatchNormalization())
+    # model.add(Conv2D(fourth_filters, kernel_size, activation='relu'))
+    # model.add(BatchNormalization())
+    # model.add(Conv2D(fourth_filters, kernel_size, activation='relu'))
+    # model.add(BatchNormalization())
+    # model.add(Conv2D(fourth_filters, kernel_size, activation='relu'))
+    # model.add(BatchNormalization())
+    # model.add(MaxPooling2D(pool_size))
+
+    # model.add(Conv2D(fourth_filters, kernel_size, activation='relu'))
+    # model.add(BatchNormalization())
+    # model.add(Conv2D(fourth_filters, kernel_size, activation='relu'))
+    # model.add(BatchNormalization())
+    # model.add(Conv2D(fourth_filters, kernel_size, activation='relu'))
+    # model.add(BatchNormalization())
+    # model.add(Conv2D(fourth_filters, kernel_size, activation='relu'))
+    # model.add(BatchNormalization())
+    # # model.add(MaxPooling2D(pool_size))
+
+    model.add(Flatten())
+    model.add(Dense(4096 * (2 ** value), activation='relu'))
+    model.add(Dropout(0.3))
+    model.add(BatchNormalization())
+
+    model.add(Dense(4096 * (2 ** value), activation='relu'))
+    model.add(Dropout(0.3))
+    model.add(BatchNormalization())
+
+    model.add(Dense(800 * (2 ** value), activation='relu'))
+    model.add(Dropout(0.3))
+    model.add(BatchNormalization())
+
+    model.add(Dense(1, activation='sigmoid'))
+
+    model.compile(loss='binary_crossentropy', optimizer=keras.optimizers.Adam(lr=3e-4),
+                  metrics=['accuracy'])
 
     return model

@@ -1,6 +1,7 @@
 from numpy.random import seed
 seed(1)
 from tensorflow import set_random_seed
+import tensorflow as tf
 set_random_seed(2)
 
 
@@ -10,6 +11,7 @@ import numpy as np
 import pandas as pd
 from keras.callbacks import LearningRateScheduler, ModelCheckpoint, ReduceLROnPlateau
 from keras.preprocessing.image import ImageDataGenerator
+from keras.preprocessing import image
 from model import CNN
 import keras.backend as K
 from keras.callbacks import Callback
@@ -93,14 +95,24 @@ class LRFinder(Callback):
 input_shape = (96, 96, 3)
 data_portion = 220000
 batch_size = 32
-epochs = 6
+epochs = 15
 # val_X, val_y = get_val_data(10000)
 try:
-    data = pd.read_csv('/Users/OliverBryniarski 1/Desktop/datasets/cancer_data/train_labels.csv').sample(data_portion)
-    path = '/Users/OliverBryniarski 1/Desktop/datasets/cancer_data/train'
+    data = pd.read_csv('/Users/Oliver/Desktop/datasets/cancer_data/train_labels.csv').sample(data_portion)
+    path = '/Users/Oliver/Desktop/datasets/cancer_data/train/'
 except:
     data = pd.read_csv('/floyd/input/data/train_labels.csv').sample(data_portion)
     path = '/floyd/input/data/train'
+
+#
+# print(type(data['label'].iloc[0]))
+# id = data['id'].iloc[0]
+# img = plt.imread(path + id + '.tif')
+# plt.imshow(img);
+# plt.show()
+# print(type(img))
+
+# gpu_used = input("Enter gpu (0 or 1): ")
 
 datagen = ImageDataGenerator(rotation_range=45,
                                     width_shift_range=0.1,
@@ -109,23 +121,19 @@ datagen = ImageDataGenerator(rotation_range=45,
                                     validation_split=0.2,
                                     rescale= 1. / 255.)
 
-
-train_generator = datagen.flow_from_dataframe(data, path, 'id',
-                                            'label', False, (96,96),
-                                            class_mode='binary',
-                                            subset='training', batch_size=batch_size, shuffle=True)
+train_generator = datagen.flow_from_dataframe(data, path, 'id', 'label', has_ext=False, target_size=(96, 96),
+                                            class_mode='binary', subset='training', batch_size=batch_size, shuffle=True)
 
 val_generator = datagen.flow_from_dataframe(data, path, 'id',
-                                            'label', False, (96,96),
+                                            'label', has_ext=False, target_size=(96, 96),
                                             class_mode='binary',
                                             subset='validation', batch_size=batch_size)
 
 
 # ------ Callbacks -------
 annealer = LearningRateScheduler(lambda x: 3e-4 * (0.95 ** (x // 3)))
-checkpoint = ModelCheckpoint('checkpoint.h5', monitor='val_acc', verbose=1, save_best_only=True, mode='max')
+checkpoint = ModelCheckpoint('checkpoint2.h5', monitor='val_acc', verbose=1, save_best_only=True, mode='max')
 lr_reducer = ReduceLROnPlateau(monitor='val_loss', factor=0.35, patience=3, verbose=1)
-
 
 # lr_finder = LRFinder(min_lr=1e-6, max_lr=1e-2, steps_per_epoch=data_portion//batch_size, epochs=epochs)
 
@@ -137,7 +145,7 @@ history = model.fit_generator(train_generator,
                             callbacks=[lr_reducer, checkpoint], verbose=1)
 
 print(model.summary())
-model.save('my_model.h5')
+model.save('my_model2.h5')
 # lr_finder.plot_loss()
 
 

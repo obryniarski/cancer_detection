@@ -16,12 +16,12 @@ def auroc(y_true, y_pred):
 datagen = ImageDataGenerator(
             rescale= 1. / 255.)
 
-test_generator = datagen.flow_from_directory('/Users/OliverBryniarski 1/Desktop/datasets/cancer_data', target_size=(96, 96),
+test_generator = datagen.flow_from_directory('/Users/Oliver/Desktop/datasets/cancer_data', target_size=(96, 96),
                                         class_mode=None, shuffle=False, classes=['test'],
                                         batch_size=1)
 
 
-model = load_model('my_model.h5', custom_objects={'auroc': auroc})
+model = load_model('checkpoint.h5', custom_objects={'auroc': auroc})
 # checkpoint_model = CNN()
 # checkpoint_model.load_weights('checkpoint.h5')
 
